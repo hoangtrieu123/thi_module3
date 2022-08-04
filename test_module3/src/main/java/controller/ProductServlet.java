@@ -3,7 +3,6 @@ package controller;
 import model.Category;
 import model.Product;
 import service.ProductService;
-import validate.Validate;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 @WebServlet(name = "ProductServlet", urlPatterns = "/product")
 public class ProductServlet extends HttpServlet {
     ProductService productService = new ProductService();
-    Validate validate = new Validate();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -66,13 +64,13 @@ public class ProductServlet extends HttpServlet {
     private void searchByName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String search = request.getParameter("search");
         ArrayList<Product> products = productService.getProducts();
-        ArrayList<Product> productsOfSearch = new ArrayList<>();
+        ArrayList<Product> searchProducts = new ArrayList<>();
         for (Product product : products) {
-            if (validate.validateNameProduct(search, product.getName())) {
-                productsOfSearch.add(product);
+            if (search.equals( product.getName())) {
+                searchProducts.add(product);
             }
         }
-        request.setAttribute("products", productsOfSearch);
+        request.setAttribute("products", searchProducts);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp");
         requestDispatcher.forward(request, response);
     }
